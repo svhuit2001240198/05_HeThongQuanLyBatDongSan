@@ -1,6 +1,7 @@
 using DoAn_NoSQL_Nhom5.Infrastructure;
 using DoAn_NoSQL_Nhom5.Models;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
@@ -10,21 +11,24 @@ public sealed class SeedService(MongoContext db, IWebHostEnvironment env)
 {
     public async Task RunAsync()
     {
-        var folder = Path.Combine(env.ContentRootPath, "Data", "mock");
-        var users = await InsertMissingAsync(Path.Combine(folder, "Users.jsonl"), db.Users, "MaUser", (User x) => x.MaUser);
-        var properties = await InsertMissingAsync(Path.Combine(folder, "BDS-demo.jsonl"), db.Properties, "MaBDS", (BatDongSan x) => x.MaBDS);
-        Console.WriteLine($"Đã thêm {users:N0} Users và {properties:N0} BĐS demo. Bản ghi có cùng mã được giữ nguyên.");
+        var folder = Path.GetFullPath(Path.Combine(env.ContentRootPath, "..", "Database"));
+        var users = await InsertMissingAsync(Path.Combine(folder, "DoAn_NoSQL.Users.json"), db.Users, "MaUser", (User x) => x.MaUser);
+        var properties = await InsertMissingAsync(Path.Combine(folder, "DoAn_NoSQL.BDS.json"), db.Properties, "MaBDS", (BatDongSan x) => x.MaBDS);
+        Console.WriteLine($"Đã thêm {users:N0} Users và {properties:N0} BĐS từ thư mục Database. Bản ghi có cùng mã được giữ nguyên.");
     }
     private static async Task<int> InsertMissingAsync<T>(string file, IMongoCollection<T> collection, string field, Func<T, string> code)
     {
-        if (!File.Exists(file)) throw new FileNotFoundException("Chưa có dữ liệu mẫu. Chạy --generate-data trước.", file);
+        if (!File.Exists(file)) throw new FileNotFoundException("Không tìm thấy file dữ liệu mẫu trong thư mục Database.", file);
         var inserted = 0; var batch = new List<T>();
-        await foreach (var line in File.ReadLinesAsync(file))
+        using var textReader = File.OpenText(file);
+        using var reader = new JsonReader(textReader);
+        reader.ReadStartArray();
+        while (reader.ReadBsonType() != BsonType.EndOfDocument)
         {
-            if (string.IsNullOrWhiteSpace(line)) continue;
-            batch.Add(BsonSerializer.Deserialize<T>(line));
+            batch.Add(BsonSerializer.Deserialize<T>(reader));
             if (batch.Count == 500) { inserted += await Flush(); batch.Clear(); }
         }
+        reader.ReadEndArray();
         if (batch.Count > 0) inserted += await Flush();
         return inserted;
         async Task<int> Flush()

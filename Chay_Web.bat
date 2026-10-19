@@ -12,7 +12,8 @@ if errorlevel 1 (
 echo Đang khôi phục thư viện và chuẩn bị project...
 dotnet restore
 if errorlevel 1 goto loi
-echo Đang nạp dữ liệu mẫu. Các bản ghi có cùng mã sẽ được giữ nguyên.
+echo Đang nạp dữ liệu từ thư mục Database nếu MongoDB còn thiếu bản ghi.
+echo Các bản ghi có cùng mã sẽ được giữ nguyên.
 dotnet run --no-launch-profile -- --seed
 if errorlevel 1 goto loi
 echo Mở trình duyệt tại http://localhost:5156
