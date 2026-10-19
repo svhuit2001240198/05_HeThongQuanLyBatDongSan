@@ -1,0 +1,2 @@
+@{ ViewData["Title"] = "Không thể mở trang"; var code = (int)(ViewBag.StatusCode ?? 404); }
+<main class="shell page-space" id="main-content"><div class="empty-state"><div class="empty-icon"><icon name="search" /></div><div class="eyebrow">@code</div><h1>Trang này chưa khả dụng</h1><p>Tin có thể đã được gỡ hoặc đường dẫn chưa chính xác.</p><a class="btn btn-primary" asp-controller="Home" asp-action="Index">Về trang chủ</a></div></main>

@@ -1,0 +1,52 @@
+@model ManagedPropertiesVM
+@{
+    Layout = "_AccountLayout";
+    ViewData["Title"] = "Quản lý bất động sản";
+    var properties = Model.Result.Items;
+}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">TIN ĐĂNG CỦA BẠN</div>
+        <h1>Quản lý bất động sản</h1>
+        <p>@Ui.Number(Model.Result.Total) tin đăng đang được quản lý.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="CreateProperty"><icon name="plus" />Đăng bất động sản</a>
+</div>
+
+@if (properties.Count == 0)
+{
+    <div class="empty-state">
+        <div class="empty-icon"><icon name="building" /></div>
+        <h3>Bạn chưa có tin đăng nào</h3>
+        <p>Tạo tin mới để giới thiệu bất động sản đến người mua và người thuê.</p>
+        <a class="btn btn-primary" asp-action="CreateProperty"><icon name="plus" />Đăng bất động sản đầu tiên</a>
+    </div>
+}
+else
+{
+    <div class="property-grid">
+        @foreach (var property in properties)
+        {
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="badge badge-gold">@Ui.Status(property.ThongTinGiaoDich.TrangThai)</span>
+                        <h2 style="margin-top:10px">@property.TieuDe</h2>
+                    </div>
+                </div>
+                <div class="data-row"><span>Giá</span><strong>@Ui.Price(property.Gia)</strong></div>
+                <div class="data-row"><span>Diện tích</span><strong>@property.DienTich m²</strong></div>
+                <div class="data-row"><span>Khu vực</span><strong>@property.DiaChi.ThanhPho</strong></div>
+                <div class="data-row"><span>Ngày đăng</span><strong>@Ui.Date(property.ThongTinGiaoDich.NgayDang)</strong></div>
+                <div class="form-actions">
+                    <a class="btn btn-outline" asp-controller="Home" asp-action="Details" asp-route-id="@property.MaBDS">Xem tin</a>
+                    <a class="btn btn-primary" asp-action="EditProperty" asp-route-id="@property.MaBDS"><icon name="edit" />Chỉnh sửa</a>
+                    <form asp-action="DeleteProperty" asp-route-id="@property.MaBDS" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tin đăng này?');">
+                        <button class="btn btn-outline" type="submit">Xóa</button>
+                    </form>
+                </div>
+            </article>
+        }
+    </div>
+    <partial name="_Pagination" model="new PaginationVM { Page = Model.Result.Page, Pages = Model.Result.Pages, Total = Model.Result.Total }" />
+}

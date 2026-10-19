@@ -1,0 +1,3 @@
+@model ErrorViewModel
+@{ ViewData["Title"] = "Tạm thời không thể tải dữ liệu"; }
+<main class="shell page-space" id="main-content"><div class="empty-state"><div class="empty-icon"><icon name="info" /></div><h1>Tạm thời không thể tải dữ liệu</h1><p>Vui lòng thử lại sau. Nếu tình trạng tiếp tục, hãy liên hệ người quản trị hệ thống.</p><a class="btn btn-primary" asp-controller="Home" asp-action="Index">Thử lại</a>@if (Model.ShowRequestId) { <p class="account-code" style="margin-top:20px">Mã hỗ trợ: @Model.RequestId</p> }</div></main>

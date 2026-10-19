@@ -1,0 +1,16 @@
+@model BatDongSan
+@{ var favorite = ViewData["FavoriteMode"] is true; var back = Context.Request.Path.ToString() + Context.Request.QueryString.ToString(); }
+<article class="property-card">
+    <a class="property-picture" asp-controller="Home" asp-action="Details" asp-route-id="@Model.MaBDS"><img src="@Ui.PropertyImage(Model)" alt="@Model.TieuDe" loading="lazy" /><span class="badge">@Ui.PropertyType(Model.LoaiBDS)</span></a>
+    <div class="property-body">
+        <h3><a asp-controller="Home" asp-action="Details" asp-route-id="@Model.MaBDS">@Model.TieuDe</a></h3>
+        <div class="property-location"><icon name="pin" />@Model.DiaChi.Phuong, @Model.DiaChi.ThanhPho</div>
+        <div class="property-details"><strong class="property-price">@Ui.Price(Model.Gia)</strong><span class="property-area">@Model.DienTich.ToString("0.##") m²</span></div>
+        <div class="property-bottom">
+            <a class="btn btn-text" asp-controller="Home" asp-action="Details" asp-route-id="@Model.MaBDS">Xem chi tiết <icon name="arrow" /></a>
+            @if (User.Identity?.IsAuthenticated == true)
+            { <form asp-controller="Account" asp-action="@(favorite ? "Unsave" : "Save")" method="post"><input type="hidden" name="maBDS" value="@Model.MaBDS" /><input type="hidden" name="returnUrl" value="@back" /><button type="submit" class="icon-button" aria-label="@(favorite ? "Bỏ lưu " : "Lưu ")@Model.TieuDe" title="@(favorite ? "Bỏ lưu" : "Lưu tin")"><icon name="@(favorite ? "trash" : "heart")" /></button></form> }
+            else { <a class="icon-button" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@back" aria-label="Đăng nhập để lưu tin"><icon name="heart" /></a> }
+        </div>
+    </div>
+</article>

@@ -1,0 +1,2 @@
+@if (TempData["Success"] is string success) { <div class="alert alert-success" role="status"><icon name="check" /><span>@success</span><button type="button" class="alert-close" data-dismiss-alert aria-label="Đóng thông báo">×</button></div> }
+@if (TempData["Error"] is string error) { <div class="alert alert-error" role="alert"><icon name="info" /><span>@error</span><button type="button" class="alert-close" data-dismiss-alert aria-label="Đóng thông báo">×</button></div> }

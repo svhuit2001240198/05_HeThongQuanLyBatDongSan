@@ -1,0 +1,14 @@
+@model LoginVM
+@{ ViewData["Title"] = "Đăng nhập"; }
+<main class="shell auth-page" id="main-content"><div class="auth-shell">
+    <section class="auth-intro"><div class="eyebrow">CHÀO MỪNG TRỞ LẠI</div><h1>Một nơi lưu giữ<br />mọi lựa chọn cho <em>tổ ấm.</em></h1><p>Tiếp tục hành trình tìm nhà. Những tin đã lưu, người bạn đã kết nối và thông tin cá nhân đều ở đây.</p><div class="auth-illustration"><img src="~/img/property-villa.svg" alt="Minh họa ngôi nhà với sân vườn" /></div><div class="auth-features"><span><icon name="heart" />Lưu tin yêu thích</span><span><icon name="users" />Kết nối môi giới</span><span><icon name="shield" />Quản lý tài khoản</span></div></section>
+    <section class="auth-card"><div class="eyebrow">TÀI KHOẢN HOMELAND</div><h2>Đăng nhập</h2><p class="intro">Nhập thông tin để tiếp tục với tài khoản của bạn.</p>
+        <form asp-controller="Account" asp-action="Login" method="post"><input asp-for="ReturnUrl" type="hidden" /><div asp-validation-summary="ModelOnly"></div>
+            <div class="form-field"><label asp-for="Email">Địa chỉ email</label><input asp-for="Email" type="email" autocomplete="email" placeholder="tenban@email.com" required /><span asp-validation-for="Email"></span></div>
+            <div class="form-field"><label asp-for="Password">Mật khẩu</label><div class="password-wrap"><input asp-for="Password" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu" required /><button type="button" class="password-toggle" data-password-toggle="Password" aria-label="Hiện mật khẩu" aria-pressed="false"><icon name="eye" /></button></div><span asp-validation-for="Password"></span></div>
+            <label class="checkbox-row"><input asp-for="RememberMe" />Ghi nhớ đăng nhập trên thiết bị này</label>
+            <button type="submit" class="btn btn-primary btn-wide">Đăng nhập <icon name="arrow" /></button>
+        </form>
+        <p class="auth-foot">Chưa có tài khoản? <a asp-action="Register">Đăng ký ngay</a></p><div class="security-note"><icon name="lock" />Thông tin tài khoản được bảo vệ.</div>
+    </section>
+</div></main>

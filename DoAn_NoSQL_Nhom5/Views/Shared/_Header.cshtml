@@ -1,0 +1,34 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<header class="app-header">
+    <div class="shell header-inner">
+        <a class="brand" asp-controller="Home" asp-action="Index"><span class="brand-symbol"><icon name="home" /></span><span>HomeLand<small>NƠI BẮT ĐẦU TỔ ẤM</small></span></a>
+        <nav class="top-nav" id="top-nav" aria-label="Điều hướng chính">
+            <a class="@(controller == "Home" && action == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">Trang chủ</a>
+            <a class="@(controller == "Home" && (action is "Properties" or "Details") ? "active" : "")" asp-controller="Home" asp-action="Properties">Bất động sản</a>
+            <a class="@(controller == "Brokers" ? "active" : "")" asp-controller="Brokers" asp-action="Index">Môi giới</a>
+        </nav>
+        <div class="header-actions">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a class="icon-button" asp-controller="Account" asp-action="Notifications" aria-label="Thông báo"><icon name="bell" /></a>
+                <details class="account-menu">
+                    <summary><span class="avatar">@Ui.Initials(User.Identity.Name)</span><span class="header-name"><strong>@User.Identity.Name</strong><small class="muted">@Ui.Role(User.FindFirstValue(ClaimTypes.Role))</small></span></summary>
+                    <div class="account-dropdown">
+                        <a asp-controller="Account" asp-action="Index"><icon name="user" />Tài khoản của tôi</a>
+                        @if (User.IsInRole(UserRoles.Admin)) { <a asp-controller="Admin" asp-action="Index"><icon name="users" />Quản lý người dùng</a> }
+                        <form asp-controller="Account" asp-action="Logout" method="post"><button type="submit"><icon name="logout" />Đăng xuất</button></form>
+                    </div>
+                </details>
+            }
+            else
+            {
+                <a class="btn btn-outline" asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Tạo tài khoản <icon name="arrow" /></a>
+            }
+            <button type="button" class="nav-toggle" data-nav-toggle aria-controls="top-nav" aria-expanded="false" aria-label="Mở menu"><icon name="menu" /></button>
+        </div>
+    </div>
+</header>

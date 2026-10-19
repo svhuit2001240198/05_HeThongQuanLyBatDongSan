@@ -1,0 +1,18 @@
+@model PaginationVM
+@{
+    string UrlFor(int page) {
+        var query = Context.Request.Query.ToDictionary(x => x.Key, x => (string?)x.Value.ToString()); query["page"] = page.ToString();
+        return Context.Request.Path.ToString() + Microsoft.AspNetCore.Http.QueryString.Create(query).ToString();
+    }
+}
+@if (Model.Pages > 1) {
+<nav class="pagination" aria-label="Phân trang">
+    @if (Model.Page > 1) { <a href="@UrlFor(Model.Page - 1)" aria-label="Trang trước">←</a> } else { <span class="disabled">←</span> }
+    @if (Model.Page > 3) { <a href="@UrlFor(1)">1</a><span>…</span> }
+    @for (var i = Math.Max(1, Model.Page - 2); i <= Math.Min(Model.Pages, Model.Page + 2); i++) {
+        if (i == Model.Page) { <span class="current" aria-current="page">@i</span> } else { <a href="@UrlFor(i)">@i</a> }
+    }
+    @if (Model.Page < Model.Pages - 2) { <span>…</span><a href="@UrlFor(Model.Pages)">@Model.Pages</a> }
+    @if (Model.Page < Model.Pages) { <a href="@UrlFor(Model.Page + 1)" aria-label="Trang sau">→</a> } else { <span class="disabled">→</span> }
+</nav> }
+<p class="pagination-count">@Ui.Number(Model.Total) kết quả · Trang @Model.Page / @Model.Pages</p>

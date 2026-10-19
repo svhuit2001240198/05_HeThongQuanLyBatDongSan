@@ -1,0 +1,6 @@
+@model HistoryVM
+@{ Layout = "_AccountLayout"; ViewData["Title"] = "Lịch sử xem"; }
+<div class="page-heading"><div><div class="eyebrow">TIẾP TỤC KHÁM PHÁ</div><h1>Lịch sử xem</h1><p>Quay lại những bất động sản bạn đã xem gần đây.</p></div>@if (Model.Items.Count > 0) { <form asp-action="ClearHistory" method="post" data-confirm="Xóa lịch sử xem của bạn?"><button type="submit" class="btn btn-outline"><icon name="trash" />Xóa lịch sử</button></form> }</div>
+@if (!Model.Available) { <div class="empty-state"><div class="empty-icon"><icon name="clock" /></div><h3>Lịch sử xem tạm thời không khả dụng</h3><p>Bạn vẫn có thể khám phá tin đăng và lưu những bất động sản yêu thích.</p><a class="btn btn-primary" asp-controller="Home" asp-action="Properties">Khám phá tin đăng</a></div> }
+else if (Model.Items.Count == 0) { <div class="empty-state"><div class="empty-icon"><icon name="clock" /></div><h3>Chưa có lịch sử xem</h3><p>Các tin bạn mở sẽ xuất hiện ở đây để dễ dàng tìm lại.</p><a class="btn btn-primary" asp-controller="Home" asp-action="Properties">Khám phá tin đăng</a></div> }
+else { <div class="property-grid">@foreach (var item in Model.Items) { <div><partial name="_PropertyCard" model="item.Property" /><p class="muted" style="font-size:11px;margin:8px 4px">Đã xem @Ui.DateTimeText(item.ViewedAt)</p></div> }</div> }

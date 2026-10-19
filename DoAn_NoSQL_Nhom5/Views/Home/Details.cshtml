@@ -1,0 +1,202 @@
+@model PropertyDetailVM
+@{
+    ViewData["Title"] = Model.Property.TieuDe;
+    var p = Model.Property;
+    var contact = Model.Broker ?? Model.Owner;
+}
+
+<main class="shell page-space" id="main-content">
+    <div class="breadcrumb">
+        <a asp-action="Properties">Bất động sản</a>
+        <icon name="chevron" />
+        <span>@Ui.PropertyType(p.LoaiBDS)</span>
+    </div>
+
+    <img class="property-hero" src="@Ui.PropertyImage(p)" alt="@p.TieuDe" />
+
+    <div class="detail-grid">
+        <!-- CỘT BÊN TRÁI: NỘI DUNG CHI TIẾT & LỊCH SỬ -->
+        <div>
+            <section class="panel">
+                <span class="badge badge-gold">@Ui.Status(p.ThongTinGiaoDich.TrangThai)</span>
+                <h1 style="margin-top:14px">@p.TieuDe</h1>
+                @if (Model.CanManage)
+                {
+                    <a class="btn btn-outline" style="margin-top:14px" asp-controller="Account" asp-action="EditProperty" asp-route-id="@p.MaBDS">
+                        <icon name="edit" />Chỉnh sửa tin đăng
+                    </a>
+                }
+                <p class="muted" style="margin-top:10px">
+                    <icon name="pin" />@p.DiaChi.SoNha @p.DiaChi.Duong, @p.DiaChi.Phuong, @p.DiaChi.ThanhPho
+                </p>
+
+                <div class="property-facts">
+                    <div class="fact">
+                        <span>Giá niêm yết</span>
+                        <strong>@Ui.Price(p.Gia)</strong>
+                    </div>
+                    <div class="fact">
+                        <span>Diện tích</span>
+                        <strong>@p.DienTich m²</strong>
+                    </div>
+                    <div class="fact">
+                        <span>Hướng</span>
+                        <strong>@p.Huong</strong>
+                    </div>
+                </div>
+
+                <h2>Thông tin bất động sản</h2>
+                <p class="muted" style="margin-top:12px;white-space:pre-line">@p.MoTa</p>
+
+                @foreach (var field in p.ThuocTinhRieng.Elements)
+                {
+                    <div class="data-row">
+                        <span>
+                            @(field.Name switch
+                            {
+                                "SoPhongNgu" => "Phòng ngủ",
+                                "SoPhongTam" => "Phòng tắm",
+                                "Tang" => "Tầng",
+                                "SoTang" => "Số tầng",
+                                "CoHoBoi" => "Hồ bơi",
+                                "CoSanVuon" => "Sân vườn",
+                                "ChoDoOto" => "Chỗ đỗ ô tô",
+                                "ChieuDai" => "Chiều dài",
+                                "ChieuRong" => "Chiều rộng",
+                                "LoaiDat" => "Loại đất",
+                                "PhapLy" => "Pháp lý",
+                                _ => field.Name
+                            })
+                        </span>
+                        <strong>@(field.Value.IsBoolean ? (field.Value.AsBoolean ? "Có" : "Không") : field.Value.ToString())</strong>
+                    </div>
+                }
+
+                <h3 style="margin-top:24px">Tiện ích</h3>
+                <div class="amenities">
+                    @foreach (var item in p.TienIch)
+                    {
+                        <span><icon name="check" />@item</span>
+                    }
+                </div>
+            </section>
+
+            <!-- SECTION LỊCH SỬ BẤT ĐỘNG SẢN / GIAO DỊCH -->
+            <section class="panel property-history" style="margin-top:24px">
+                <div class="eyebrow">PROPERTY HISTORY</div>
+                <h2 style="margin-top:8px">Lịch sử bất động sản</h2>
+                <p class="muted" style="margin-top:6px">
+                    Lịch sử cập nhật và hoạt động của tin đăng.
+                </p>
+
+                @{
+                    // Lấy lịch sử từ ViewModel. Nếu ViewModel trống thì hiển thị mốc ngày đăng mặc định.
+                    var historyList = (Model.History != null && Model.History.Any())
+                        ? Model.History
+                        : new List<PropertyHistoryItem>
+                        {
+                            new PropertyHistoryItem
+                            {
+                                Title = "Tin đăng được tạo",
+                                Description = "Bất động sản được đăng tải lên hệ thống.",
+                                Date = p.ThongTinGiaoDich.NgayDang,
+                                Type = "created"
+                            }
+                        };
+                }
+
+                <div class="history-timeline" style="margin-top:16px">
+                    @foreach (var item in historyList.OrderByDescending(x => x.Date))
+                    {
+                        <div class="history-item">
+                            <div class="history-marker @item.Type">
+                                @switch (item.Type?.ToLower())
+                                {
+                                    case "created":
+                                        <icon name="plus" />
+                                        break;
+                                    case "updated":
+                                        <icon name="edit" />
+                                        break;
+                                    case "price":
+                                        <icon name="tag" />
+                                        break;
+                                    case "checked":
+                                    case "status":
+                                        <icon name="check" />
+                                        break;
+                                    default:
+                                        <icon name="clock" />
+                                        break;
+                                }
+                            </div>
+
+                            <div class="history-content">
+                                <div class="history-top">
+                                    <strong>@item.Title</strong>
+                                    <span class="history-date">
+                                        @Ui.Date(item.Date)
+                                    </span>
+                                </div>
+                                <p class="muted" style="margin-top:4px">@item.Description</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+        </div>
+
+        <!-- CỘT BÊN PHẢI: THÔNG TIN LIÊN HỆ & TƯƠNG TÁC -->
+        <aside>
+            <section class="panel">
+                <div class="eyebrow">KẾT NỐI NGƯỜI ĐĂNG</div>
+                @if (contact is not null)
+                {
+                    <div class="broker-card-top">
+                        <span class="avatar avatar-lg">@Ui.Initials(contact.HoTen)</span>
+                        <div>
+                            <h3>@contact.HoTen</h3>
+                            <span class="muted">@Ui.Role(contact.VaiTro)</span>
+                        </div>
+                    </div>
+                    <div class="data-row">
+                        <span>Điện thoại</span>
+                        <strong>@contact.SDT</strong>
+                    </div>
+                    <div class="data-row">
+                        <span>Email</span>
+                        <strong>@contact.Email</strong>
+                    </div>
+                    @if (Model.Broker is not null)
+                    {
+                        <a class="btn btn-outline btn-wide" style="margin-top:18px" asp-controller="Brokers" asp-action="Details" asp-route-id="@Model.Broker.MaUser">
+                            Xem hồ sơ môi giới <icon name="arrow" />
+                        </a>
+                    }
+                }
+                else
+                {
+                    <p class="muted">Thông tin liên hệ đang được cập nhật.</p>
+                }
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <form asp-controller="Account" asp-action="@(Model.IsSaved ? "Unsave" : "Save")" method="post" style="margin-top:12px">
+                        <input type="hidden" name="maBDS" value="@p.MaBDS" />
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                        <button class="btn btn-primary btn-wide" type="submit">
+                            <icon name="heart" />@(Model.IsSaved ? "Bỏ lưu bất động sản" : "Lưu bất động sản")
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a class="btn btn-primary btn-wide" style="margin-top:12px" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Context.Request.Path">
+                        <icon name="heart" />Đăng nhập để lưu tin
+                    </a>
+                }
+                <p class="muted" style="font-size:11px;margin-top:18px">Đăng ngày @Ui.Date(p.ThongTinGiaoDich.NgayDang)</p>
+            </section>
+        </aside>
+    </div>
+</main>

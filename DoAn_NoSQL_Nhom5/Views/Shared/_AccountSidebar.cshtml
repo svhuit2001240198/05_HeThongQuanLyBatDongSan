@@ -1,0 +1,19 @@
+@{ var action = ViewContext.RouteData.Values["action"]?.ToString(); }
+<aside class="sidebar">
+    <div class="sidebar-person"><span class="avatar avatar-lg">@Ui.Initials(User.Identity?.Name)</span><h3>@User.Identity?.Name</h3><span class="badge badge-gold">@Ui.Role(User.FindFirstValue(ClaimTypes.Role))</span></div>
+    <nav class="side-nav" aria-label="Menu tài khoản">
+        <a class="@(action == "Index" ? "active" : "")" asp-controller="Account" asp-action="Index"><icon name="grid" />Tổng quan</a>
+        <a class="@(action == "Profile" ? "active" : "")" asp-controller="Account" asp-action="Profile"><icon name="user" />Hồ sơ cá nhân</a>
+        <a class="@(action == "ChangePassword" ? "active" : "")" asp-controller="Account" asp-action="ChangePassword"><icon name="shield" />Bảo mật</a>
+        @if (User.IsInRole(UserRoles.Seller) || User.IsInRole(UserRoles.Broker) || User.IsInRole(UserRoles.Admin))
+        {
+            <a class="@(action == "ManagedProperties" || action == "CreateProperty" || action == "EditProperty" ? "active" : "")" asp-controller="Account" asp-action="ManagedProperties"><icon name="building" />Quản lý bất động sản</a>
+        }
+        <a class="@(action == "Favorites" ? "active" : "")" asp-controller="Account" asp-action="Favorites"><icon name="heart" />Tin đã lưu</a>
+        <a class="@(action == "Notifications" ? "active" : "")" asp-controller="Account" asp-action="Notifications"><icon name="bell" />Thông báo</a>
+        <a class="@(action == "History" ? "active" : "")" asp-controller="Account" asp-action="History"><icon name="clock" />Lịch sử xem</a>
+        @if (User.IsInRole(UserRoles.Broker)) { <a asp-controller="Brokers" asp-action="Details" asp-route-id="@User.FindFirstValue(ClaimTypes.NameIdentifier)"><icon name="building" />Hồ sơ môi giới</a> }
+        @if (User.IsInRole(UserRoles.Admin)) { <a asp-controller="Admin" asp-action="Index"><icon name="users" />Quản lý người dùng</a> }
+    </nav>
+    <div class="sidebar-bottom">Mọi lựa chọn cho tổ ấm của bạn, được lưu lại ở một nơi.</div>
+</aside>

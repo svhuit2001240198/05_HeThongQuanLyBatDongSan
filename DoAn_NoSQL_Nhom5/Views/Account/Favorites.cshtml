@@ -1,0 +1,6 @@
+@model FavoriteVM
+@{ Layout = "_AccountLayout"; ViewData["Title"] = "Tin đã lưu"; ViewData["FavoriteMode"] = true; }
+<div class="page-heading"><div><div class="eyebrow">LỰA CHỌN CỦA BẠN</div><h1>Tin đã lưu</h1><p>@Ui.Number(Model.Result.Total) bất động sản để bạn xem lại và so sánh.</p></div>@if (Model.Result.Total > 0 || Model.MissingCount > 0) { <form asp-action="ClearFavorites" method="post" data-confirm="Xóa toàn bộ danh sách tin đã lưu?"><button type="submit" class="btn btn-outline"><icon name="trash" />Bỏ lưu tất cả</button></form> }</div>
+@if (Model.MissingCount > 0) { <div class="alert alert-info"><icon name="info" /><span>@Model.MissingCount tin đã lưu hiện không còn khả dụng nên không được hiển thị.</span></div> }
+@if (Model.Result.Items.Count > 0) { <div class="property-grid">@foreach (var p in Model.Result.Items) { <partial name="_PropertyCard" model="p" /> }</div><partial name="_Pagination" model="new PaginationVM { Page = Model.Result.Page, Pages = Model.Result.Pages, Total = Model.Result.Total }" /> }
+else { <div class="empty-state"><div class="empty-icon"><icon name="heart" /></div><h3>Chưa có tin đã lưu</h3><p>Nhấn biểu tượng trái tim ở tin đăng để thêm bất động sản vào danh sách của bạn.</p><a class="btn btn-primary" asp-controller="Home" asp-action="Properties">Tìm bất động sản <icon name="arrow" /></a></div> }

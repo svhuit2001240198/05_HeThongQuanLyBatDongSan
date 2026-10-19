@@ -1,0 +1,112 @@
+@model PropertyFormVM
+@{
+    Layout = "_AccountLayout";
+    var isEdit = !string.IsNullOrWhiteSpace(Model.MaBDS);
+    ViewData["Title"] = isEdit ? "Chỉnh sửa tin bất động sản" : "Đăng bất động sản";
+}
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">QUẢN LÝ TIN ĐĂNG</div>
+        <h1>@(isEdit ? "Chỉnh sửa bất động sản" : "Đăng bất động sản")</h1>
+        <p>Cung cấp thông tin chính xác để khách hàng dễ dàng tìm thấy tin đăng.</p>
+    </div>
+</div>
+
+<form asp-action="@(isEdit ? "EditProperty" : "CreateProperty")" asp-route-id="@Model.MaBDS" method="post" class="panel">
+    <input asp-for="MaBDS" type="hidden" />
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="panel-heading"><h2>Thông tin cơ bản</h2></div>
+    <div class="form-grid">
+        <div class="form-field full">
+            <label asp-for="TieuDe">Tiêu đề tin đăng</label>
+            <input asp-for="TieuDe" maxlength="140" required />
+            <span asp-validation-for="TieuDe"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="LoaiBDS">Loại bất động sản</label>
+            <select asp-for="LoaiBDS">
+                <option value="can_ho">Căn hộ</option>
+                <option value="dat_nen">Đất nền</option>
+                <option value="biet_thu">Biệt thự</option>
+            </select>
+            <span asp-validation-for="LoaiBDS"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="LoaiGiaoDich">Loại giao dịch</label>
+            <select asp-for="LoaiGiaoDich">
+                <option value="ban">Bán</option>
+                <option value="cho_thue">Cho thuê</option>
+            </select>
+            <span asp-validation-for="LoaiGiaoDich"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="Gia">Giá (VNĐ)</label>
+            <input asp-for="Gia" type="number" min="1" step="1000" required />
+            <span asp-validation-for="Gia"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="DienTich">Diện tích (m²)</label>
+            <input asp-for="DienTich" type="number" min="1" step="0.1" required />
+            <span asp-validation-for="DienTich"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="Huong">Hướng</label>
+            <input asp-for="Huong" maxlength="60" placeholder="Đông Nam" />
+            <span asp-validation-for="Huong"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="TrangThai">Trạng thái tin</label>
+            <select asp-for="TrangThai">
+                <option value="dang_ban">Đang bán</option>
+                <option value="da_dat_coc">Đã đặt cọc</option>
+                <option value="da_ban">Đã bán</option>
+                <option value="dang_cho_thue">Đang cho thuê</option>
+                <option value="da_cho_thue">Đã cho thuê</option>
+                <option value="tam_an">Tạm ẩn</option>
+                <option value="het_han">Hết hạn</option>
+            </select>
+            <span asp-validation-for="TrangThai"></span>
+        </div>
+        <div class="form-field">
+            <label asp-for="NgayHetHan">Ngày hết hạn</label>
+            <input asp-for="NgayHetHan" type="date" required />
+            <span asp-validation-for="NgayHetHan"></span>
+        </div>
+        <div class="form-field full">
+            <label asp-for="MoTa">Mô tả</label>
+            <textarea asp-for="MoTa" rows="6" maxlength="5000" required></textarea>
+            <span asp-validation-for="MoTa"></span>
+        </div>
+    </div>
+
+    <hr class="form-separator" />
+    <div class="panel-heading"><h2>Địa chỉ</h2></div>
+    <div class="form-grid">
+        <div class="form-field"><label asp-for="SoNha">Số nhà</label><input asp-for="SoNha" maxlength="100" /><span asp-validation-for="SoNha"></span></div>
+        <div class="form-field"><label asp-for="Duong">Đường</label><input asp-for="Duong" maxlength="160" required /><span asp-validation-for="Duong"></span></div>
+        <div class="form-field"><label asp-for="Phuong">Phường / xã</label><input asp-for="Phuong" maxlength="100" /><span asp-validation-for="Phuong"></span></div>
+        <div class="form-field"><label asp-for="Quan">Quận / huyện</label><input asp-for="Quan" maxlength="100" /><span asp-validation-for="Quan"></span></div>
+        <div class="form-field full"><label asp-for="ThanhPho">Tỉnh / thành phố</label><input asp-for="ThanhPho" maxlength="100" required /><span asp-validation-for="ThanhPho"></span></div>
+    </div>
+
+    <hr class="form-separator" />
+    <div class="panel-heading"><h2>Ảnh và tiện ích</h2></div>
+    <div class="form-grid">
+        <div class="form-field full">
+            <label asp-for="HinhAnhUrls">Đường dẫn ảnh</label>
+            <textarea asp-for="HinhAnhUrls" rows="4" maxlength="2000" placeholder="Mỗi dòng một đường dẫn ảnh (HTTPS hoặc đường dẫn nội bộ bắt đầu bằng /)"></textarea>
+            <span class="hint">Tối đa 10 ảnh. Hiện hỗ trợ đường dẫn ảnh HTTPS hoặc ảnh có sẵn trong website.</span>
+            <span asp-validation-for="HinhAnhUrls"></span>
+        </div>
+        <div class="form-field full">
+            <label asp-for="TienIch">Tiện ích</label>
+            <input asp-for="TienIch" maxlength="1000" placeholder="Hồ bơi, Sân vườn, Bãi đỗ xe" />
+            <span class="hint">Phân cách các tiện ích bằng dấu phẩy.</span>
+            <span asp-validation-for="TienIch"></span>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit"><icon name="check" />@(isEdit ? "Lưu thay đổi" : "Đăng tin")</button>
+        <a class="btn btn-outline" asp-action="ManagedProperties">Hủy</a>
+    </div>
+</form>

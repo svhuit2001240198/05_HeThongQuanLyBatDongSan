@@ -1,0 +1,15 @@
+@model RegisterVM
+@{ ViewData["Title"] = "Tạo tài khoản"; }
+<main class="shell auth-page" id="main-content"><div class="auth-shell">
+    <section class="auth-intro"><div class="eyebrow">BẮT ĐẦU CÙNG HOMELAND</div><h1>Tìm đúng ngôi nhà.<br />Kết nối đúng <em>người.</em></h1><p>Tạo tài khoản để lưu những bất động sản bạn quan tâm và kết nối với người bán, môi giới.</p><div class="auth-illustration"><img src="~/img/property-apartment.svg" alt="Minh họa khu căn hộ hiện đại" /></div><div class="auth-features"><span><icon name="check" />Hồ sơ cá nhân</span><span><icon name="heart" />Danh sách yêu thích</span><span><icon name="bell" />Thông báo mới</span></div></section>
+    <section class="auth-card"><div class="eyebrow">CHỈ VÀI BƯỚC ĐƠN GIẢN</div><h2>Tạo tài khoản</h2><p class="intro">Chọn vai trò phù hợp với nhu cầu của bạn.</p>
+        <form asp-controller="Account" asp-action="Register" method="post"><div asp-validation-summary="ModelOnly"></div>
+            <div class="role-choice">@foreach (var role in UserRoles.PublicRoles) { <label><icon name="@(role == UserRoles.Buyer ? "home" : role == UserRoles.Seller ? "building" : "users")" /><span>@Ui.Role(role)</span><input type="radio" asp-for="VaiTro" value="@role" /></label> }</div><span asp-validation-for="VaiTro"></span>
+            <div class="form-field"><label asp-for="HoTen">Họ và tên</label><input asp-for="HoTen" autocomplete="name" required placeholder="Nguyễn Văn An" /><span asp-validation-for="HoTen"></span></div>
+            <div class="form-grid"><div class="form-field"><label asp-for="Email">Email</label><input asp-for="Email" type="email" autocomplete="email" required placeholder="tenban@email.com" /><span asp-validation-for="Email"></span></div><div class="form-field"><label asp-for="SDT">Số điện thoại</label><input asp-for="SDT" type="tel" autocomplete="tel" required placeholder="0901234567" /><span asp-validation-for="SDT"></span></div></div>
+            <div class="form-field" style="margin-top:18px"><label asp-for="Password">Mật khẩu</label><div class="password-wrap"><input asp-for="Password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required placeholder="Ít nhất 8 ký tự" /><button type="button" class="password-toggle" data-password-toggle="Password" aria-label="Hiện mật khẩu"><icon name="eye" /></button></div><span asp-validation-for="Password"></span></div>
+            <div class="form-field"><label asp-for="ConfirmPassword">Nhập lại mật khẩu</label><input asp-for="ConfirmPassword" type="password" autocomplete="new-password" required /><span asp-validation-for="ConfirmPassword"></span></div>
+            <button type="submit" class="btn btn-primary btn-wide">Tạo tài khoản <icon name="arrow" /></button>
+        </form><p class="auth-foot">Đã có tài khoản? <a asp-action="Login">Đăng nhập</a></p>
+    </section>
+</div></main>

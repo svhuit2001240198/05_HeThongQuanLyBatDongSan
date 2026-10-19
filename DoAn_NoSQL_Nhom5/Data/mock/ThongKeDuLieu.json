@@ -1,0 +1,14 @@
+{
+  "Users": 10000,
+  "BDS_demo": 18,
+  "VaiTro": {
+    "admin": 1,
+    "nguoi_mua": 5996,
+    "nguoi_ban": 2001,
+    "moi_gioi": 2002
+  },
+  "UsersCoHoSoMoiGioi": 2002,
+  "TongDanhGia": 4926,
+  "TongThongBao": 12191,
+  "TongMaBDSDaLuu": 29917
+}

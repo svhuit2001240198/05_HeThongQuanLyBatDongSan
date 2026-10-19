@@ -1,0 +1,14 @@
+flowchart TD
+  U["Users: MaUser"]
+  P["BDS: MaBDS"]
+  F["BDSDaLuu trong Users"]
+  R["DanhGia trong Users"]
+  N["ThongBao trong Users"]
+  P -->|"MaChuSoHuu, MaMoiGioi, MaNguoiThayDoi"| U
+  U --- F
+  U --- R
+  U --- N
+  F -->|"MaBDS"| P
+  R -->|"MaBDS tùy chọn"| P
+  R -->|"MaUserDanhGia"| U
+  N -->|"MaBDS tùy chọn"| P
